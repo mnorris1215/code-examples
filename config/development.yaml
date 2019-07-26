@@ -1,0 +1,63 @@
+# Docker Compose version
+version: '3.3'
+services:
+  # Gulp
+  gulp:
+    build:
+      context: ../../
+      dockerfile: /gulp/Dockerfile
+      args:
+        PROJECT_NAME: ${PROJECT_NAME}
+        APP_NAME: ${APP_NAME}
+    image: --
+    command: gulp serve
+    ports:
+      - "3000:3000"
+      - "3001:3001"
+    volumes:
+      - ../../src/web:/${PROJECT_NAME}:cached
+      - /${PROJECT_NAME}/wp-content/themes/${APP_NAME}/dev/node_modules
+  # MySQL
+  mysql:
+    image: mysql:8.0.12
+    volumes:
+      - db:/var/lib/mysql
+      - ../../etc/data/mysql:/data
+      - ../containers/mysql:/etc/mysql/conf.d
+    restart: always
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${PROJECT_NAME}
+      MYSQL_DATABASE: ${PROJECT_NAME}
+      MYSQL_USER: --
+      MYSQL_PASSWORD: --
+  # Wordpress
+  web:
+    depends_on:
+    - mysql
+    build:
+      context: ../../
+      dockerfile: etc/containers/wordpress/Dockerfile
+      args:
+        PROJECT_NAME: ${PROJECT_NAME}
+        APP_NAME: ${APP_NAME}
+    image: --
+    ports:
+      - "8000:80"
+    volumes:
+      - ../../src/web:/${PROJECT_NAME}
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: mysql:3306
+      WORDPRESS_DB_NAME: ${PROJECT_NAME}
+      WORDPRESS_DB_USER: --
+      WORDPRESS_DB_PASSWORD: --
+      WORDPRESS_DB_TABLE_PREFIX: ${PROJECT_NAME}
+      WORDPRESS_DEBUG: 1
+      DEBUG: 1
+      WP_SITEURL: http://localhost:8000
+
+# Volumes
+volumes:
+  db:

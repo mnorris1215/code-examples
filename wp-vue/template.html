@@ -1,0 +1,79 @@
+<div class="page-history-bee">
+    <history-bee-subnav></history-bee-subnav>
+
+    <div class= "body-inner">
+      <div class="hero">
+        <div class="container">
+          <div class="content">
+              <h1>The Who Was?</h1>
+              <h1>History Bee</h1>
+            <p>Introducing a brand-new trivia competition for kids in 3rd-5th grades. It's
+             going to be exciting, challenging, and epically fun!</p>
+
+        <a href="#signup" @click="smoothScroll" class="button buttons">Sign Up</a>
+        <a href="#rules-info" @click="smoothScroll" class='button buttons'>Rules & Info</a>
+        </div>
+       </div>
+    </div>
+
+    <signup-section id="signup" name="anchor"></signup-section>
+
+    <div class="rules-info-section" id="rules-info">
+        <div class="container">
+      <h1>Rules & Info</h1>
+      <div v-if="page.acf.accordion.overview" v-html="page.acf.accordion.overview"
+           class="overview"></div>
+      <!-- <p class="overview"> The Who Was? History Bee is open to students in grades 3rd-5th across the United States.
+        Homeschooled students can participate in the Bee as well.
+        You can find specific rules for homeschoolers <a target="_blank" href="http://www.whowasbookseries.com/wp-content/uploads/2019/07/5f4f2b2b-who_was_history_bee_rules.pdf">here</a>.</p> -->
+      <div class="accordion" v-if="page.acf.accordion.rule">
+        <accordion-item v-for="(item, index) in page.acf.accordion.rule"
+          :item="item"
+          :index="index"
+          :key="index">
+        </accordion-item>
+        </div>
+        <a href="#signup" @click="smoothScroll" class="button faq_button">Sign Up</a>
+      </div>
+  </div>
+
+    <div class="for-teachers-section section" id="teachers" v-if="page.acf.for_teachers_section.resources">
+      <div class="container">
+        <h1>For Teachers</h1>
+        <div v-if="page.acf.for_teachers_section.overview" v-html="page.acf.for_teachers_section.overview"
+             class="overview"></div>
+
+        <div class="resources">
+          <div class="preview" :style="'background-image:url(' + activeResource.preview + ');'">
+         </div>
+
+        <div class="list">
+          <ul>
+            <li v-for="(resource, index) in page.acf.for_teachers_section.resources" :key="index"
+                @click="currentIndex = index" :class="{ 'active': currentIndex === index }">
+                <span>{{ resource.title }}</span>
+                <a :href="resource.file" v-if="currentIndex === index" target="_blank" v-track="['Download', 'Resource', resource.title]">Download</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <div class= "for-parents-section section" id="parents" v-if="page.acf.for_parents_section.documents">
+      <div class="container">
+        <h1>For Parents</h1>
+        <div v-if="page.acf.for_parents_section.overview" v-html="page.acf.for_parents_section.overview"
+            class="overview"></div>
+        <ul class="documents">
+          <li v-for="document in page.acf.for_parents_section.documents">
+            <a :href="document.file" target="_blank" v-track="['Download', 'Documents', document.title]">
+              <img :src="document.thumbnail.sizes.medium" :alt="document.title" />
+              <span>{{ document.title }}</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+ </div>
+</div>
