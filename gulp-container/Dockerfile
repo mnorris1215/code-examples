@@ -1,5 +1,4 @@
-# Remember, paths in this file are relative to the root of the repository,
-# and not relative to this file.
+
 FROM node:8-alpine
 
 # Set options
